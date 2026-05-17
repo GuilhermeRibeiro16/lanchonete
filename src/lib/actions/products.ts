@@ -141,8 +141,11 @@ export async function toggleProductAvailability(id: string, available: boolean) 
 // UPLOAD DE IMAGEM
 // ================================================
 
-export async function uploadProductImage(file: File): Promise<string> {
+export async function uploadProductImage(formData: FormData): Promise<string> {
   const supabase = createAdminClient()
+
+  const file = formData.get('file') as File
+  if (!file) throw new Error('Arquivo não encontrado')
 
   const ext = file.name.split('.').pop()
   const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`

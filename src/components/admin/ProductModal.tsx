@@ -50,21 +50,25 @@ export default function ProductModal({ product, categories, onClose, onSaved }: 
   const [newOption, setNewOption] = useState<Record<string, { name: string; price: string }>>({})
   const [savingOption, setSavingOption] = useState<string | null>(null)
 
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setImageLoading(true)
-    try {
-      if (imageUrl) await deleteProductImage(imageUrl)
-      const url = await uploadProductImage(file)
-      setImageUrl(url)
-      toast.success('Imagem enviada')
-    } catch {
-      toast.error('Erro ao enviar imagem')
-    } finally {
-      setImageLoading(false)
-    }
+async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  const file = e.target.files?.[0]
+  if (!file) return
+  setImageLoading(true)
+  try {
+    if (imageUrl) await deleteProductImage(imageUrl)
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const url = await uploadProductImage(formData)
+    setImageUrl(url)
+    toast.success('Imagem enviada')
+  } catch {
+    toast.error('Erro ao enviar imagem')
+  } finally {
+    setImageLoading(false)
   }
+}
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
