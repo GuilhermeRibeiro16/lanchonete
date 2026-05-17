@@ -31,14 +31,12 @@ export async function middleware(request: NextRequest) {
   const isLoginPage = pathname === '/admin/login'
   const isAdminRoute = pathname.startsWith('/admin')
 
-  // Não está logado e tentando acessar admin
   if (isAdminRoute && !isLoginPage && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/admin/login'
     return NextResponse.redirect(url)
   }
 
-  // Está logado e tentando acessar login
   if (isLoginPage && user) {
     const url = request.nextUrl.clone()
     url.pathname = '/admin/orders'
@@ -49,7 +47,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  matcher: ['/admin/:path*']
 }
