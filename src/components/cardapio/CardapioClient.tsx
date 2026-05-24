@@ -274,6 +274,37 @@ useEffect(() => {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           />  
+          {/* Setas — desktop */}
+{heroProducts.length > 1 && (
+  <>
+    <button
+      onClick={() => setHeroIndex(i => (i - 1 + heroProducts.length) % heroProducts.length)}
+      style={{
+        position: 'absolute', left: '12px', top: '50%',
+        transform: 'translateY(-50%)', zIndex: 2,
+        backgroundColor: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: '50%', width: '36px', height: '36px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'pointer', color: 'white', fontSize: '1rem',
+      }}
+    >
+      ‹
+    </button>
+    <button
+      onClick={() => setHeroIndex(i => (i + 1) % heroProducts.length)}
+      style={{
+        position: 'absolute', right: '12px', top: '50%',
+        transform: 'translateY(-50%)', zIndex: 2,
+        backgroundColor: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: '50%', width: '36px', height: '36px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'pointer', color: 'white', fontSize: '1rem',
+      }}
+    >
+      ›
+    </button>
+  </>
+)}
    
 
           {/* Dots do carousel */}
