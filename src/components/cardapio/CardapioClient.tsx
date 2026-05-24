@@ -26,6 +26,32 @@ export default function CardapioClient({ categories, products, settings, tableNu
   const [menuOpen, setMenuOpen] = useState(false)
   const [heroIndex, setHeroIndex] = useState(0)
   const categoryBarRef = useRef<HTMLDivElement>(null)
+  //variaveis para adicionar o slider no carrossel
+  const touchStartX = useRef<number>(0)
+  const touchEndX = useRef<number>(0)
+  const SWIPE_THRESHOLD = 50 // pixels mínimos para considerar swipe
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    touchEndX.current = e.touches[0].clientX
+  }
+
+  function handleTouchEnd() {
+    const diff = touchStartX.current - touchEndX.current
+    if (Math.abs(diff) < SWIPE_THRESHOLD) return
+
+    if (diff > 0) {
+      // Swipe para esquerda — próximo
+      setHeroIndex(i => (i + 1) % heroProducts.length)
+    } else {
+      // Swipe para direita — anterior
+      setHeroIndex(i => (i - 1 + heroProducts.length) % heroProducts.length)
+    }
+  }
+
 
     // Realtime — produto indisponível some imediatamente
 const [availableProducts, setAvailableProducts] = useState(products)
@@ -151,16 +177,16 @@ useEffect(() => {
             </a>
           )}
           <Link
-  href="/historico"
-  style={{
-    color: '#a1a1aa', fontSize: '0.8rem', textDecoration: 'none',
-    padding: '0.4rem 0.75rem', borderRadius: '20px',
-    border: '1px solid #1f1f1f', backgroundColor: '#141414',
-    whiteSpace: 'nowrap',
-  }}
->
-  Meus pedidos
-</Link>
+            href="/historico"
+            style={{
+              color: '#a1a1aa', fontSize: '0.8rem', textDecoration: 'none',
+              padding: '0.4rem 0.75rem', borderRadius: '20px',
+              border: '1px solid #1f1f1f', backgroundColor: '#141414',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Meus pedidos
+          </Link>
           <button
             onClick={() => setCartOpen(true)}
             style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: '#fafafa', padding: '4px' }}
@@ -194,7 +220,10 @@ useEffect(() => {
               transform: 'scale(1.1)',
             }} />
           )}
+          
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(10,10,10,0.95) 40%, rgba(10,10,10,0.3))' }} />
+
+
 
           {/* Conteúdo */}
           <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', alignItems: 'center', padding: '1.5rem' }}>
@@ -202,6 +231,7 @@ useEffect(() => {
               <p style={{ color: '#dc2626', fontSize: '0.75rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>
                 Destaque
               </p>
+              
               <h2 style={{ color: 'white', fontSize: '1.75rem', fontWeight: '900', textTransform: 'uppercase', lineHeight: 1.1, marginBottom: '0.5rem' }}>
                 {heroProduct.name}
               </h2>
@@ -227,6 +257,8 @@ useEffect(() => {
               </button>
             </div>
 
+              
+
             {/* Imagem do produto */}
             {heroProduct.image_url && (
               <div style={{ width: '160px', height: '160px', flexShrink: 0 }}>
@@ -235,6 +267,14 @@ useEffect(() => {
               </div>
             )}
           </div>
+          // Área de swipe para mobile
+          <div
+          style={{ position: 'relative', height: '280px', overflow: 'hidden' }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          />  
+   
 
           {/* Dots do carousel */}
           {heroProducts.length > 1 && (
